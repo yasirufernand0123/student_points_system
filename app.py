@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -41,3 +41,10 @@ def add_points():
 if __name__ == '__main__':
     db.create_all()
     app.run(debug=True)
+
+@app.route('/packages')
+def list_packages():
+    import pkg_resources
+    installed_packages = pkg_resources.working_set
+    packages = sorted(["%s==%s" % (i.key, i.version) for i in installed_packages])
+    return jsonify(packages)
